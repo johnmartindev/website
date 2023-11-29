@@ -2,7 +2,7 @@ import "./App.css";
 import "bootstrap/dist/js/bootstrap.js";
 import "bootstrap/dist/css/bootstrap.css";
 import Header from "./Header";
-import Intro from "./sections/intro";
+import Intro from "./sections/Intro";
 import Skills from "./sections/Skills";
 import Projects from "./sections/Projects";
 import Contact from "./sections/Contact";
