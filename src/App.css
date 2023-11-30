@@ -26,19 +26,19 @@
 }
 
 .page-section#intro {
-  background: #111;
+  /* background: #111; */
 }
 
 .page-section#skills {
-  background: #eee;
+  background: #eeeeee76;
 }
 
 .page-section#projects {
-  background: #222;
+  background: #22222283;
 }
 
 .page-section#contact {
-  background: #aaa;
+  background: #aaaaaa86;
 }
 
 .navbar-toggler-icon {

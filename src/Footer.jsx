@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="center center-horizontally page-footer my-3">
+    <footer className="bg-white center center-horizontally page-footer py-3">
       <ul
         className="d-flex center justify-content-between list-group list-group-horizontal"
         style={{ maxWidth: 1024 }}
