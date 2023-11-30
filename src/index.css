@@ -84,6 +84,7 @@ h1 {
 }
 
 #experience-canvas {
+  background: #000;
   position: fixed !important;
   height: 100vh !important;
   width: 100vw !important;
