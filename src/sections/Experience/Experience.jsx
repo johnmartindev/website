@@ -88,15 +88,11 @@ export default function Experience() {
         </mesh>
 
         <mesh ref={meshRef2} position-y={[-objectsDistance * 2]}>
-          <ambientLight />
-          <directionalLight />
           <boxGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color="#FFBA49" />
         </mesh>
 
         <mesh ref={meshRef3} position-y={[-objectsDistance * 3]}>
-          <ambientLight />
-          <directionalLight />
           <boxGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color="#A4A9AD" />
         </mesh>
