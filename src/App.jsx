@@ -8,12 +8,14 @@ import Skills from "./sections/Skills";
 import Projects from "./sections/Projects";
 import Contact from "./sections/Contact";
 import Footer from "./Footer";
+import Backgrounds from "./sections/Backgrounds/Backgrounds";
 
 // import Widget from "./Widget";
 
 function App() {
   return (
     <>
+      <Backgrounds />
       <CanvasWrapper />
       <Header />
       {/* <Widget /> */}
