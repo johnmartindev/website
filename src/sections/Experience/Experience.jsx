@@ -28,7 +28,7 @@ export default function Experience() {
     };
   }, []);
 
-  useFrame((state, delta) => {
+  useFrame(() => {
     //
     camera.position.y =
       (-window.scrollY / window.innerHeight) * objectsDistance;
@@ -36,10 +36,10 @@ export default function Experience() {
     //
     if (meshRef.current) {
       // Rotate the box on the y-axis
-      meshRef.current.rotation.y += delta * 0.5 * 0.5;
-      meshRef1.current.rotation.x += delta * 0.5;
-      meshRef2.current.rotation.y += delta * 0.5;
-      meshRef3.current.rotation.z += delta * 0.5;
+      // meshRef.current.rotation.y += delta * 0.5 * 0.5;
+      //meshRef1.current.rotation.x += delta * 0.5;
+      // meshRef2.current.rotation.y += delta * 0.5;
+      // meshRef3.current.rotation.z += delta * 0.5;
     }
   });
 
