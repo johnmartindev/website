@@ -7,6 +7,7 @@ export default function CanvasWrapper() {
     <Canvas
       id="experience-canvas"
       gl={{
+        alpha: true,
         antialias: true,
         toneMapping: THREE.ACESFilmicToneMapping,
         // outputColorSpace: THREE.SRGBColorSpace

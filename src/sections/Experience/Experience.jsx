@@ -14,7 +14,7 @@ export default function Experience() {
   useEffect(() => {
     const handleScroll = () => {
       if (meshRef.current) {
-        meshRef1bg.current.position.z = -3;
+        // meshRef1bg.current.position.z = -3;
         meshRef1bg.current.position.x = -4;
       }
     };
