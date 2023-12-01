@@ -9,7 +9,7 @@ export default function Experience() {
   const meshRef3 = useRef();
   const { camera } = useThree();
 
-  const objectsDistance = 7;
+  const objectsDistance = 5;
 
   useEffect(() => {
     const handleScroll = () => {
