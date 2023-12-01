@@ -172,3 +172,8 @@ h3.subtitle-darker {
     opacity: 1;
   }
 }
+
+#wrapper-container {
+  border: 2px solid red;
+  height: 100%;
+}

@@ -14,7 +14,7 @@ import Backgrounds from "./sections/Backgrounds/Backgrounds";
 
 function App() {
   return (
-    <>
+    <div id="wrapper-container">
       <Backgrounds />
       <CanvasWrapper />
       <Header />
@@ -24,7 +24,7 @@ function App() {
       <Projects />
       <Contact />
       <Footer />
-    </>
+    </div>
   );
 }
 

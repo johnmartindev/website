@@ -1,7 +1,12 @@
+import { Perf } from "r3f-perf";
+import { useControls } from "leva";
 import { useRef, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 
 export default function Experience() {
+  const controls = useControls({ position: -2 });
+  console.log(controls.position);
+
   const meshRef = useRef();
   const meshRef1 = useRef();
   const meshRef1bg = useRef();
@@ -63,6 +68,7 @@ export default function Experience() {
 
   return (
     <>
+      <Perf position="bottom-left" />
       <group>
         {/* <axesHelper /> */}
         {/* <Sparkles size={10} /> */}
