@@ -1,15 +1,16 @@
 import { Perf } from "r3f-perf";
-import { useControls } from "leva";
+//import { useControls } from "leva";
 import { useRef, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 
 export default function Experience() {
-  const controls = useControls({ position: -2 });
-  console.log(controls.position);
+  let container = document.getElementById("wrapper-container");
+  //const controls = useControls({ position: -2 });
+
+  window.scrollTo(0, 0);
 
   const meshRef = useRef();
   const meshRef1 = useRef();
-  const meshRef1bg = useRef();
   const meshRef2 = useRef();
   const meshRef3 = useRef();
   const { camera } = useThree();
@@ -18,10 +19,13 @@ export default function Experience() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (meshRef.current) {
-        // meshRef1bg.current.position.z = -3;
-        meshRef1bg.current.position.x = -4;
-      }
+      const containerTop = container.getBoundingClientRect().top;
+      const containerHeight = container.offsetHeight;
+
+      camera.position.y = (containerTop / containerHeight) * objectsDistance;
+
+      // if (meshRef.current) {
+      // }
     };
 
     // Listen for scroll events
@@ -33,43 +37,20 @@ export default function Experience() {
     };
   }, []);
 
-  useFrame(() => {
-    //
-    camera.position.y =
-      (-window.scrollY / window.innerHeight) * objectsDistance;
-
-    //
+  useFrame((state, delta) => {
     if (meshRef.current) {
-      // Rotate the box on the y-axis
-      // meshRef.current.rotation.y += delta * 0.5 * 0.5;
-      //meshRef1.current.rotation.x += delta * 0.5;
-      // meshRef2.current.rotation.y += delta * 0.5;
-      // meshRef3.current.rotation.z += delta * 0.5;
+      meshRef.current.rotation.y += delta * 0.5 * 0.5;
+      meshRef1.current.rotation.x += delta * 0.5;
+      meshRef2.current.rotation.z += delta * 0.5 * 0.5;
+      meshRef3.current.rotation.y += delta * 0.5;
     }
   });
-
-  // const matcapTextureFile = `./matcaps/diamond/matcap-diamond.jpg`;
-  // const skinTextureFile = `./matcaps/diamond/skin.png`;
-  // const envTextureFile = `./matcaps/diamond/env.png`;
-
-  // const texture = {
-  //   matcap: matcapTextureFile,
-  //   skin: skinTextureFile,
-  //   env: envTextureFile,
-  // };
-
-  // const gltf = useLoader(GLTFLoader, "./models/monogram-logo.gltf");
-  // const o_mat = new THREE.MeshMatcapMaterial({
-  //   color: 0xffffff,
-  //   side: THREE.DoubleSide,
-  //   matcap: new THREE.TextureLoader().load(texture.matcap),
-  //   map: new THREE.TextureLoader().load(texture.env),
-  // });
 
   return (
     <>
       <Perf position="bottom-left" />
       <group>
+        {/* <Sparkles size={1} scale={10} position={[-1, -1, 1]} /> */}
         {/* <axesHelper /> */}
         {/* <Sparkles size={10} /> */}
         {/* <primitive
@@ -78,29 +59,30 @@ export default function Experience() {
           object={gltf.scene}
           position={[0, -0.5, 0]}
           scale={[0.5, 0.5, 0.5]}
-
           // children-0-castShadow
           // material={o_mat}
         /> */}
 
+        <directionalLight />
+        <ambientLight />
         <mesh ref={meshRef}>
           <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="#EF5B5B" />
+          <meshStandardMaterial color="Tomato" />
         </mesh>
 
         <mesh ref={meshRef1} position-y={[-objectsDistance * 1]}>
           <boxGeometry args={[1, 1, 1]} wireframe={true} />
-          <meshStandardMaterial color="#20A39E" />
+          <meshStandardMaterial color="LightGray" />
         </mesh>
 
         <mesh ref={meshRef2} position-y={[-objectsDistance * 2]}>
           <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="#FFBA49" />
+          <meshStandardMaterial color="DodgerBlue" />
         </mesh>
 
         <mesh ref={meshRef3} position-y={[-objectsDistance * 3]}>
           <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="#A4A9AD" />
+          <meshStandardMaterial color="MediumSeaGreen" />
         </mesh>
       </group>
     </>
