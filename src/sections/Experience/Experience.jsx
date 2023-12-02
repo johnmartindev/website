@@ -1,30 +1,79 @@
+// Imports:
 import { Perf } from "r3f-perf";
-//import { useControls } from "leva";
 import { useRef, useEffect } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { extend, useFrame, useThree } from "@react-three/fiber";
+import { ShaderIntroPlaneMaterial } from "./shaders/introPlane/shaderIntroPlaneMaterial";
+import { useGLTF } from "@react-three/drei";
+//import { useControls } from "leva";
 
 export default function Experience() {
-  let container = document.getElementById("wrapper-container");
+  const objectsDistance = 5;
+  let containerMain = document.getElementById("wrapper-container");
+  let containerIntro = document.getElementById("intro");
   //const controls = useControls({ position: -2 });
 
-  window.scrollTo(0, 0);
+  /* References:
+   ******************************************/
+  // 1. Intro refs:
+  const meshIntroPlaneRef = useRef();
+  const shaderIntroPlaneRef = useRef();
+  const primitiveIntroMonogramRef = useRef();
 
-  const meshRef = useRef();
-  const meshRef1 = useRef();
-  const meshRef2 = useRef();
-  const meshRef3 = useRef();
+  // 2. Skills refs:
+  const skillsRef = useRef();
+
+  // 3. Projects refs:
+  const meshProjectsRef = useRef();
+
+  // 4. Contact refs:
+  const meshContactRef = useRef();
+
+  // Camera ref:
   const { camera } = useThree();
 
-  const objectsDistance = 5;
+  // Temporary fix for loading issue with shader....
+  window.scrollTo(0, 0);
 
+  /* Materials:
+   ******************************************/
+  extend({ ShaderIntroPlaneMaterial }); // Feels slower... no loader? Bring code back here:
+
+  /* Models:
+   ******************************************/
+  const computerMonogram = useGLTF("./models/macbook_model.gltf");
+  const modelMonogram = useGLTF("./models/monogram-logo.gltf");
+
+  /* References:
+   ******************************************/
   useEffect(() => {
-    const handleScroll = () => {
-      const containerTop = container.getBoundingClientRect().top;
-      const containerHeight = container.offsetHeight;
+    if (meshIntroPlaneRef.current) {
+      meshIntroPlaneRef.current.material.transparent = true;
+    }
+    const cameraCp = camera;
+    //cameraPositionCp.y = 1;
+    console.log(cameraCp.position);
+    meshIntroPlaneRef.current.lookAt(camera.position);
 
+    // Handle scroll:
+    const handleScroll = () => {
+      const containerHeight = containerMain.offsetHeight;
+      const containerTop = containerMain.getBoundingClientRect().top;
+      const containerIntroRect = containerIntro.getBoundingClientRect();
+      const containerIntroHeight = containerIntroRect.height;
+      const containerIntroOpacity = 1 - -containerTop / containerIntroHeight;
+
+      // Make camera follow objects of each section:
       camera.position.y = (containerTop / containerHeight) * objectsDistance;
 
-      // if (meshRef.current) {
+      // Make opacity of intro plane fade to zero on scroll down:
+      shaderIntroPlaneRef.current.uOpacity = containerIntroOpacity.toFixed(2);
+
+      // Adjust the plane's opacity based on the scroll
+      if (meshIntroPlaneRef.current) {
+        meshIntroPlaneRef.current.material.opacity = 0.2;
+      }
+
+      // if (primitiveIntroMonogramRef.current) {
       // }
     };
 
@@ -37,12 +86,14 @@ export default function Experience() {
     };
   }, []);
 
+  /* UseFrame:
+   ******************************************/
   useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += delta * 0.5 * 0.5;
-      meshRef1.current.rotation.x += delta * 0.5;
-      meshRef2.current.rotation.z += delta * 0.5 * 0.5;
-      meshRef3.current.rotation.y += delta * 0.5;
+    shaderIntroPlaneRef.current.uTime += delta * 0.5;
+    if (meshProjectsRef.current) {
+      primitiveIntroMonogramRef.current.rotation.y += delta;
+      meshProjectsRef.current.rotation.y += delta * 0.5 * 0.5;
+      meshContactRef.current.rotation.x += delta * 0.5;
     }
   });
 
@@ -50,37 +101,46 @@ export default function Experience() {
     <>
       <Perf position="bottom-left" />
       <group>
-        {/* <Sparkles size={1} scale={10} position={[-1, -1, 1]} /> */}
-        {/* <axesHelper /> */}
-        {/* <Sparkles size={10} /> */}
-        {/* <primitive
-          wireframe={true}
-          ref={meshRef}
-          object={gltf.scene}
-          position={[0, -0.5, 0]}
-          scale={[0.5, 0.5, 0.5]}
-          // children-0-castShadow
-          // material={o_mat}
-        /> */}
-
         <directionalLight />
         <ambientLight />
-        <mesh ref={meshRef}>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="Tomato" />
+
+        {/* 1. Intro:
+         ******************************************/}
+        <primitive
+          ref={primitiveIntroMonogramRef}
+          object={modelMonogram.scene}
+          scale={[0.4, 0.4, 0.4]}
+          //position={[2.5, -0.75, 5]}
+          position={[0.5, -0.75, 1]}
+          rotation={[0, 0.9, 0]}
+        />
+        <mesh ref={meshIntroPlaneRef} scale={[2.5, 1.1, 1.5]}>
+          <planeGeometry args={[4, 4]} />
+          <shaderIntroPlaneMaterial ref={shaderIntroPlaneRef} opacity={0.2} />
         </mesh>
 
-        <mesh ref={meshRef1} position-y={[-objectsDistance * 1]}>
-          <boxGeometry args={[1, 1, 1]} wireframe={true} />
-          <meshStandardMaterial color="LightGray" />
+        {/* 2. Skills:
+         ******************************************/}
+        <group ref={skillsRef} position-y={[-objectsDistance * 1]}>
+          <mesh>
+            <boxGeometry args={[1, 1, 1]} position={[1, 1, 1]} />
+            <meshStandardMaterial color="MediumSeaGreen" />
+          </mesh>
+        </group>
+
+        {/* 3. Projects:
+         ******************************************/}
+        <mesh ref={meshProjectsRef} position-y={[-objectsDistance * 2]}>
+          <primitive
+            object={computerMonogram.scene}
+            scale={[0.5, 0.5, 0.5]}
+            position={[0.2, -1, 1]}
+          />
         </mesh>
 
-        <mesh ref={meshRef2} position-y={[-objectsDistance * 2]}>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="DodgerBlue" />
-        </mesh>
-
-        <mesh ref={meshRef3} position-y={[-objectsDistance * 3]}>
+        {/* 4. Contact:
+         ******************************************/}
+        <mesh ref={meshContactRef} position-y={[-objectsDistance * 3]}>
           <boxGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color="MediumSeaGreen" />
         </mesh>

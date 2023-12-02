@@ -10,7 +10,7 @@ import Contact from "./sections/Contact";
 import Footer from "./Footer";
 import Backgrounds from "./sections/Backgrounds/Backgrounds";
 
-// import Widget from "./Widget";
+//import Widget from "./Widget";
 
 function App() {
   return (
