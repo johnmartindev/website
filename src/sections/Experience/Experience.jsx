@@ -1,10 +1,13 @@
 // Imports:
+import * as THREE from "three";
 import { Perf } from "r3f-perf";
 import { useRef, useEffect } from "react";
-import { extend, useFrame, useThree } from "@react-three/fiber";
+import { extend, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { Environment, Float, useGLTF } from "@react-three/drei";
 import { ShaderIntroPlaneMaterial } from "./shaders/introPlane/shaderIntroPlaneMaterial";
-import { useGLTF } from "@react-three/drei";
 //import { useControls } from "leva";
+import { useSkillsStore } from "../../store/store";
+import { skillsAssets } from "./skillsAssets/skillsAssets";
 
 export default function Experience() {
   const objectsDistance = 5;
@@ -18,9 +21,57 @@ export default function Experience() {
   const meshIntroPlaneRef = useRef();
   const shaderIntroPlaneRef = useRef();
   const primitiveIntroMonogramRef = useRef();
+  const materialIntroMonogram = new THREE.MeshPhysicalMaterial({
+    color: 0x000000,
+    metalness: 0.7,
+    roughness: 0.2,
+  });
 
   // 2. Skills refs:
   const skillsRef = useRef();
+  const skillCubeHoveredRef = useRef(null);
+  const materialSkillCube = new THREE.MeshPhysicalMaterial({
+    color: 0x999999,
+    metalness: 0.9,
+    roughness: 0.2,
+  });
+  const materials = [
+    materialSkillCube,
+    materialSkillCube,
+    materialSkillCube,
+    materialSkillCube,
+    // Texture will be added on index 4 later:
+    materialSkillCube,
+    materialSkillCube,
+  ];
+  const skillWhiteGradient = document.getElementById(
+    "skill-white-radial-gradient-container"
+  );
+
+  const handleSkillCubePointerOver = (event, cubeID) => {
+    event.stopPropagation();
+    skillCubeHoveredRef.current = cubeID;
+    skillWhiteGradient.style.opacity = 1;
+  };
+
+  const handleSkillCubePointerOut = (event) => {
+    event.stopPropagation();
+    containerMain.style.cursor = "default";
+    skillCubeHoveredRef.current = null;
+    skillWhiteGradient.style.opacity = 0;
+  };
+
+  const skillIndex = useSkillsStore((state) => state.skillIndex);
+  const setSkillIndex = useSkillsStore((state) => state.setSkillIndex);
+
+  const handleSkillCubeClick = (event, cubeID) => {
+    event.stopPropagation();
+    const selectedCube = scene.getObjectByName(cubeID);
+    console.log("Selected cube:", selectedCube);
+    console.log(skillIndex);
+    document.getElementById("skill-overlay").style.display = "block";
+    setSkillIndex(cubeID.split("-")[1]);
+  };
 
   // 3. Projects refs:
   const meshProjectsRef = useRef();
@@ -32,7 +83,7 @@ export default function Experience() {
   const { camera } = useThree();
 
   // Temporary fix for loading issue with shader....
-  window.scrollTo(0, 0);
+  // window.scrollTo(0, 0);
 
   /* Materials:
    ******************************************/
@@ -43,9 +94,21 @@ export default function Experience() {
   const computerMonogram = useGLTF("./models/macbook_model.gltf");
   const modelMonogram = useGLTF("./models/monogram-logo.gltf");
 
+  modelMonogram.scene.traverse((child) => {
+    if (child.isMesh) {
+      child.material = materialIntroMonogram;
+    }
+  });
+
+  const { scene } = useThree();
+
   /* References:
    ******************************************/
   useEffect(() => {
+    containerMain.addEventListener("mousemove", (event) => {
+      skillWhiteGradient.style.top = event.clientY + "px";
+      skillWhiteGradient.style.left = event.clientX + "px";
+    });
     if (meshIntroPlaneRef.current) {
       meshIntroPlaneRef.current.material.transparent = true;
     }
@@ -72,16 +135,18 @@ export default function Experience() {
       if (meshIntroPlaneRef.current) {
         meshIntroPlaneRef.current.material.opacity = 0.2;
       }
-
-      // if (primitiveIntroMonogramRef.current) {
-      // }
     };
 
     // Listen for scroll events
     window.addEventListener("scroll", handleScroll);
 
+    window.addEventListener("mousemove", (event) => {
+      skillWhiteGradient.style.display = "block";
+      skillWhiteGradient.style.top = event.clientY + window.scrollY - 50 + "px";
+      skillWhiteGradient.style.left =
+        event.clientX + window.scrollX - 50 + "px";
+    });
     return () => {
-      // Remove the event listener when the component unmounts
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
@@ -89,16 +154,66 @@ export default function Experience() {
   /* UseFrame:
    ******************************************/
   useFrame((state, delta) => {
-    shaderIntroPlaneRef.current.uTime += delta * 0.5;
-    if (meshProjectsRef.current) {
+    // 1. Update uTime shader uniform with delta:
+    if (shaderIntroPlaneRef.current) {
+      shaderIntroPlaneRef.current.uTime += delta * 0.5;
+    }
+    // 2. Update intro monogram to rotate:
+    if (primitiveIntroMonogramRef.current) {
       primitiveIntroMonogramRef.current.rotation.y += delta;
-      meshProjectsRef.current.rotation.y += delta * 0.5 * 0.5;
+    }
+
+    // 3. Update contact cube to rotate:
+    if (meshContactRef.current) {
       meshContactRef.current.rotation.x += delta * 0.5;
+    }
+
+    // Check if a skill cube is hovered over. If so, grow it:
+    for (let i = 0; i < skillsAssets.gridSize * skillsAssets.gridSize; i++) {
+      const cubeID = `cube-${i}`;
+      const mesh = scene.getObjectByName(cubeID);
+      if (mesh) {
+        if (skillCubeHoveredRef.current === cubeID) {
+          mesh.scale.set(0.7, 0.7, 0.7); // Grow when hovered
+          containerMain.style.cursor = "pointer";
+        } else {
+          mesh.scale.set(0.5, 0.5, 0.5); // Shrink back to normal when not hovered
+        }
+      }
     }
   });
 
+  // Create 3D "skills" cubes:
+  const textures = useLoader(THREE.TextureLoader, skillsAssets.imagePaths);
+  let cubes = [];
+  for (let i = 0; i < skillsAssets.gridSize; i++) {
+    for (let j = 0; j < skillsAssets.gridSize; j++) {
+      const cubeMaterials = [...materials];
+      const cubeID = `cube-${i * skillsAssets.gridSize + j}`;
+      cubeMaterials[4] = new THREE.MeshPhysicalMaterial({
+        map: textures[i * skillsAssets.gridSize + j],
+        metalness: skillsAssets.materialProperties.metalness,
+        roughness: skillsAssets.materialProperties.roughness,
+      });
+      cubes.push(
+        <mesh
+          key={cubeID}
+          material={cubeMaterials}
+          name={cubeID}
+          onClick={(e) => handleSkillCubeClick(e, cubeID)}
+          onPointerOut={handleSkillCubePointerOut}
+          onPointerOver={(e) => handleSkillCubePointerOver(e, cubeID)}
+          position={skillsAssets.positions[i * skillsAssets.gridSize + j]}
+          scale={[0.5, 0.5, 0.2]}
+        >
+          <boxGeometry />
+        </mesh>
+      );
+    }
+  }
   return (
     <>
+      <Environment preset="city" />
       <Perf position="bottom-left" />
       <group>
         <directionalLight />
@@ -107,6 +222,7 @@ export default function Experience() {
         {/* 1. Intro:
          ******************************************/}
         <primitive
+          material={materialIntroMonogram}
           ref={primitiveIntroMonogramRef}
           object={modelMonogram.scene}
           scale={[0.4, 0.4, 0.4]}
@@ -121,20 +237,24 @@ export default function Experience() {
 
         {/* 2. Skills:
          ******************************************/}
-        <group ref={skillsRef} position-y={[-objectsDistance * 1]}>
-          <mesh>
-            <boxGeometry args={[1, 1, 1]} position={[1, 1, 1]} />
-            <meshStandardMaterial color="MediumSeaGreen" />
-          </mesh>
+        <group
+          scale={0.7}
+          rotation={[0, 0.7, 0]}
+          ref={skillsRef}
+          position-y={[-objectsDistance * 1 - 0.1]}
+        >
+          <Float speed={3}>{cubes}</Float>
         </group>
 
         {/* 3. Projects:
          ******************************************/}
+
         <mesh ref={meshProjectsRef} position-y={[-objectsDistance * 2]}>
           <primitive
             object={computerMonogram.scene}
             scale={[0.5, 0.5, 0.5]}
-            position={[0.2, -1, 1]}
+            position={[1.5, -1, 3]}
+            rotation={[0, 0.5, 0]}
           />
         </mesh>
 

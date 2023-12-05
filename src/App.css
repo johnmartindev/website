@@ -89,6 +89,7 @@ h3.subtitle-darker {
 }
 
 .page-section-fore {
+  pointer-events: none;
   z-index: 1;
 }
 
@@ -175,4 +176,78 @@ h3.subtitle-darker {
 
 #wrapper-container {
   height: 100vh;
+}
+
+.skill-hud {
+  padding-top: 50px;
+}
+.skill-overlay {
+  animation: fadeIn 0.5s;
+  background: rgba(2, 3, 4, 0.7);
+  backdrop-filter: saturate(180%) blur(20px);
+  height: 100vh;
+  width: 100vw;
+  z-index: 100000;
+  display: none;
+  position: fixed;
+  top: 0;
+}
+
+.skill-area {
+  height: 100vh;
+  padding-bottom: 150px;
+}
+
+.skill-area-l,
+.skill-area-r {
+  border: 0px solid red;
+  height: 50vh;
+  width: 100%;
+  margin-bottom: 80px;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* change for prerender image eventually */
+.test-button {
+  transform: scale(1.2s);
+  position: relative;
+
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  width: 100px;
+  color: #000;
+}
+
+.leftTop {
+  background: #eee;
+  border: solid 1px #999;
+  box-shadow: -1px -0px 0px #999, -0px -1px 0px #999, -2px -1px 0px #999,
+    -1px -2px 0px #999, -3px -2px 0px #999, -2px -3px 0px #999,
+    -4px -3px 0px #999, -3px -4px 0px #999, -5px -4px 0px #999,
+    -4px -5px 0px #999, -6px -5px 0px #999, -5px -6px 0px #999,
+    -7px -6px 0px #999, -6px -7px 0px #999, -8px -7px 0px #999,
+    -7px -8px 0px #999, -9px -8px 0px #999, -8px -9px 0px #999;
+}
+
+.skill-white-radial-gradient-container {
+  display: none;
+  height: 100px;
+  left: 0;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100px;
+  z-index: 1000;
 }
