@@ -1,31 +1,28 @@
 export const fragmentShader = `
-varying vec2 vUv;
-uniform float uTime;
-uniform float uOpacity;
+precision highp float;
 
-// Function to create a smooth, undulating noise pattern
-float undulatingNoise(vec2 st, float time) {
-    st *= 2.0; // Scale the space
-    float noise = sin(st.x * 3.0 + time) * cos(st.y * 3.0 + time) * 0.5 + 0.5;
-    return noise;
-}
+uniform float uTime;
+varying vec2 vUv;
 
 void main() {
-    vec2 uv = vUv;
+    vec2 uv = vUv * 2.0 - 1.0; // Normalize coordinates
+    uv.x *= 2.0;
 
-    // Adjust the time scale for a slower, more fluid movement
-    float time = uTime * 0.5;
+    // Create a dynamic gradient avoiding pink
+    vec3 color = vec3(
+        0.5 + 0.5 * sin(uTime + uv.x),         // Red component
+        0.5 + 0.5 * sin(uTime * 1.3 + uv.y),   // Green component
+        0.5 + 0.5 * cos(uTime * 1.7 + uv.x)    // Blue component
+    );
 
-    // Generate the undulating noise pattern
-    float n = undulatingNoise(uv, time);
+    // Adjust blue when red is strong to avoid pink
+    float redStrength = smoothstep(0.3, 0.7, color.r);
+    color.b = mix(color.b, color.b * (1.0 - redStrength), redStrength);
 
-    // Define the colors for the lava and the lamp
-    vec3 lavaColor = vec3(1.0, 0.5, 0.2); // Warm orange for lava
-    vec3 lampColor = vec3(0.0, 0.0, 0.2); // Dark blue for lamp background
+    // Diamond-shaped vignette
+    float diamond = smoothstep(0.8, 0.5, abs(uv.x) + abs(uv.y));
+    color *= diamond;
 
-    // Mix the lava and lamp colors based on the noise pattern
-    vec3 color = mix(lampColor, lavaColor, n);
-
-    gl_FragColor = vec4(color, 1.0) * uOpacity;
+    gl_FragColor = vec4(color, 1.0) * 0.6;
 }
 `;

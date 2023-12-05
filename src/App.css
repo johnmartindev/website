@@ -89,6 +89,9 @@ h3.subtitle-darker {
 }
 
 .page-section-fore {
+  z-index: 1;
+}
+#skills > .page-section-fore {
   pointer-events: none;
   z-index: 1;
 }
@@ -99,6 +102,7 @@ h3.subtitle-darker {
 
 .page-section#intro {
   /* background: #111; */
+  mix-blend-mode: exclusion;
 }
 
 .page-footer {

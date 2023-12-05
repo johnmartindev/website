@@ -2,23 +2,23 @@ import { useSkillsStore } from "../store/store";
 
 const skills = [
   {
-    title: "Skill 0",
+    title: "Web Development",
     description:
-      "Skill 0 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "My skill stack includes a diverse range of technologies across multiple domains: front-end, back-end, and middleware. It includes the likes of HTML5, CSS3, and JavaScript, but also languages like Python, Ruby, and PHP when such languages are required (for example, PHP on Wordpress sites).",
     img: {
       src: "/textures/skill-cubes/0.png",
     },
   },
   {
-    title: "Skill 1",
+    title: "Programming",
     description:
-      "Skill 1 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "JavaScript is the programming language I use most. In recent years, this technology has become incredibly robust and ubiquitous — used to code on ...servers, and even ... microcontrollers. I take advantage of JavaScript libraries and frameworks where possible (React). ... superset TypeScript. ... As mentioned in other sections I can write Python, PHP, Ruby and some C and Java when needed.",
     img: {
       src: "/textures/skill-cubes/1.png",
     },
   },
   {
-    title: "Skill 2",
+    title: "User Experience",
     description:
       "Skill 2 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     img: {
@@ -26,7 +26,7 @@ const skills = [
     },
   },
   {
-    title: "Skill 3",
+    title: "Databases",
     description:
       "Skill 3 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     img: {
@@ -34,7 +34,7 @@ const skills = [
     },
   },
   {
-    title: "Skill 4",
+    title: "Multimedia",
     description:
       "Skill 4 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     img: {
@@ -42,7 +42,7 @@ const skills = [
     },
   },
   {
-    title: "Skill 5",
+    title: "3D Software",
     description:
       "Skill 5 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     img: {
@@ -50,7 +50,7 @@ const skills = [
     },
   },
   {
-    title: "Skill 6",
+    title: "Bash Scripting",
     description:
       "Skill 6 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     img: {
@@ -58,7 +58,7 @@ const skills = [
     },
   },
   {
-    title: "Skill 7",
+    title: "Writing",
     description:
       "Skill 7 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     img: {
@@ -66,7 +66,7 @@ const skills = [
     },
   },
   {
-    title: "Skill 8",
+    title: "Soft Skills",
     description:
       "Skill 8 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     img: {
@@ -90,7 +90,7 @@ export default function Skills() {
       <div id="skill-overlay" className="skill-overlay py-4">
         <div className="skill-hud text-light row col-12 col-md-6 offset-md-3">
           <div className="col-6">
-            <h1>{useSkillsStore((state) => state.skillIndex)}</h1>
+            <h1>{skills[useSkillsStore((state) => state.skillIndex)].title}</h1>
             <h3 className="subtitle-darker">Subtitle</h3>
           </div>
           <div className="col-6">
@@ -129,15 +129,27 @@ export default function Skills() {
         </div>
       </div>
       <div className="page-section center-vertically" id="skills">
-        <div className="page-section-fore text-dark">
+        <div
+          className="page-section-fore text-dark"
+          style={{ marginTop: -400 }}
+        >
           <h1>Skills</h1>
           <h3 className="subtitle-darker">To make it happen.</h3>
-          <div style={{ marginTop: 400 }}>
-            <button>
-              See projects <i className="fa-solid fa-chevron-down"></i>
-            </button>
-          </div>
         </div>
+      </div>
+      <div
+        style={{
+          bottom: 150,
+          position: "relative",
+          width: "100vw",
+          zIndex: 1,
+        }}
+      >
+        <a href="#projects-bg">
+          <button style={{ zIndex: 1 }} onClick={() => console.log("works")}>
+            See projects <i className="fa-solid fa-chevron-down"></i>
+          </button>
+        </a>
       </div>
     </>
   );

@@ -21,11 +21,27 @@ export default function Experience() {
   const meshIntroPlaneRef = useRef();
   const shaderIntroPlaneRef = useRef();
   const primitiveIntroMonogramRef = useRef();
-  const materialIntroMonogram = new THREE.MeshPhysicalMaterial({
-    color: 0x000000,
-    metalness: 0.7,
-    roughness: 0.2,
+
+  const matcapTextureFile = `/matcaps/diamond/matcap-diamond.jpg`;
+
+  const texture = {
+    matcap: matcapTextureFile,
+    skin: "/matcaps/diamond/skin.png",
+    env: "/matcaps/diamond/env.png",
+  };
+
+  const materialIntroMonogram2 = new THREE.MeshMatcapMaterial({
+    color: 0xcccccc,
+    side: THREE.DoubleSide,
+    matcap: new THREE.TextureLoader().load(texture.matcap),
+    map: new THREE.TextureLoader().load(texture.env),
   });
+
+  // const materialIntroMonogram = new THREE.MeshPhysicalMaterial({
+  //   color: 0x222222,
+  //   metalness: 0.8,
+  //   roughness: 0.2,
+  // });
 
   // 2. Skills refs:
   const skillsRef = useRef();
@@ -80,7 +96,7 @@ export default function Experience() {
   const meshContactRef = useRef();
 
   // Camera ref:
-  const { camera } = useThree();
+  const { camera, scene } = useThree();
 
   // Temporary fix for loading issue with shader....
   // window.scrollTo(0, 0);
@@ -96,11 +112,9 @@ export default function Experience() {
 
   modelMonogram.scene.traverse((child) => {
     if (child.isMesh) {
-      child.material = materialIntroMonogram;
+      child.material = materialIntroMonogram2;
     }
   });
-
-  const { scene } = useThree();
 
   /* References:
    ******************************************/
@@ -156,7 +170,7 @@ export default function Experience() {
   useFrame((state, delta) => {
     // 1. Update uTime shader uniform with delta:
     if (shaderIntroPlaneRef.current) {
-      shaderIntroPlaneRef.current.uTime += delta * 0.5;
+      shaderIntroPlaneRef.current.uTime += delta * 0.5 * 0.5;
     }
     // 2. Update intro monogram to rotate:
     if (primitiveIntroMonogramRef.current) {
@@ -216,13 +230,11 @@ export default function Experience() {
       <Environment preset="city" />
       <Perf position="bottom-left" />
       <group>
-        <directionalLight />
-        <ambientLight />
-
+        <ambientLight intensity={4} />
         {/* 1. Intro:
          ******************************************/}
         <primitive
-          material={materialIntroMonogram}
+          material={materialIntroMonogram2}
           ref={primitiveIntroMonogramRef}
           object={modelMonogram.scene}
           scale={[0.4, 0.4, 0.4]}
@@ -231,7 +243,7 @@ export default function Experience() {
           rotation={[0, 0.9, 0]}
         />
         <mesh ref={meshIntroPlaneRef} scale={[2.5, 1.1, 1.5]}>
-          <planeGeometry args={[4, 4]} />
+          <planeGeometry args={[3.5, 3.5]} />
           <shaderIntroPlaneMaterial ref={shaderIntroPlaneRef} opacity={0.2} />
         </mesh>
 
@@ -239,11 +251,11 @@ export default function Experience() {
          ******************************************/}
         <group
           scale={0.7}
-          rotation={[0, 0.7, 0]}
+          rotation={[0, 0.6, 0]}
           ref={skillsRef}
           position-y={[-objectsDistance * 1 - 0.1]}
         >
-          <Float speed={3}>{cubes}</Float>
+          <Float speed={2.5}>{cubes}</Float>
         </group>
 
         {/* 3. Projects:
