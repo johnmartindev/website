@@ -40,7 +40,6 @@ div#contact-bg {
 }
 
 h3.subtitle {
-  color: #ccc;
   font-weight: 300;
   font-size: 20px;
 }
@@ -254,4 +253,12 @@ h3.subtitle-darker {
   top: 0;
   width: 100px;
   z-index: 1000;
+}
+
+.ff-bg {
+  background: linear-gradient(navy, black);
+  border-image: linear-gradient(#ffffff, rgb(0, 128, 128)) 30;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
 }

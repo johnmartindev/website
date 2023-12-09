@@ -1,13 +1,15 @@
 // Imports:
 import * as THREE from "three";
-import { Perf } from "r3f-perf";
-import { useRef, useEffect, Suspense } from "react";
+// import { Perf } from "r3f-perf";
+import { useRef, useEffect, Suspense, useState } from "react";
 import { extend, useFrame, useLoader, useThree } from "@react-three/fiber";
-import { Environment, Float, Html, useGLTF } from "@react-three/drei";
+import { Environment, Float, Html, Sparkles, useGLTF } from "@react-three/drei";
 import { ShaderIntroPlaneMaterial } from "./shaders/introPlane/shaderIntroPlaneMaterial";
+//import { ShaderProjectsPlaneMaterial } from "./shaders/projects/shaderProjectsPlaneMaterial";
 //import { useControls } from "leva";
 import { useSkillsStore } from "../../store/store";
 import { skillsAssets } from "./skillsAssets/skillsAssets";
+//import gsap from "gsap/gsap-core";
 
 export default function Experience() {
   const objectsDistance = 5;
@@ -23,25 +25,18 @@ export default function Experience() {
   const primitiveIntroMonogramRef = useRef();
 
   const matcapTextureFile = `/matcaps/diamond/matcap-diamond.jpg`;
-
   const texture = {
     matcap: matcapTextureFile,
     skin: "/matcaps/diamond/skin.png",
     env: "/matcaps/diamond/env.png",
   };
 
-  const materialIntroMonogram2 = new THREE.MeshMatcapMaterial({
+  const materialIntroMonogram = new THREE.MeshMatcapMaterial({
     color: 0xcccccc,
     side: THREE.DoubleSide,
     matcap: new THREE.TextureLoader().load(texture.matcap),
     map: new THREE.TextureLoader().load(texture.env),
   });
-
-  // const materialIntroMonogram = new THREE.MeshPhysicalMaterial({
-  //   color: 0x222222,
-  //   metalness: 0.8,
-  //   roughness: 0.2,
-  // });
 
   // 2. Skills refs:
   const skillsRef = useRef();
@@ -99,7 +94,7 @@ export default function Experience() {
   const { camera, scene } = useThree();
 
   // Temporary fix for loading issue with shader....
-  // window.scrollTo(0, 0);
+  window.scrollTo(0, 0);
 
   /* Materials:
    ******************************************/
@@ -107,14 +102,39 @@ export default function Experience() {
 
   /* Models:
    ******************************************/
-  const computerMonogram = useGLTF("./models/macbook_model.gltf");
   const modelMonogram = useGLTF("./models/monogram-logo.gltf");
 
   modelMonogram.scene.traverse((child) => {
     if (child.isMesh) {
-      child.material = materialIntroMonogram2;
+      child.material = materialIntroMonogram;
     }
   });
+
+  useEffect(() => {
+    // Check if the model's scene is defined
+    if (modelMonogram.scene) {
+      modelMonogram.scene.traverse((child) => {
+        if (child.isMesh) {
+          child.material = materialIntroMonogram;
+        }
+      });
+      //
+      // gsap.to(modelMonogram.scene.position, {
+      //   // x: 3.4,
+      //   z: ,
+      //   // z: 0.4,
+      //   duration: 3,
+      //   ease: "power4.in",
+      // });
+
+      // scale={[0.4, 0.4, 0.4]}
+      // //position={[2.5, -0.75, 5]}
+      // position={[0.5, -0.75, 1]}
+      // rotation={[0, 0.9, 0]}
+
+      // Start the GSAP animation
+    }
+  }, []);
 
   /* References:
    ******************************************/
@@ -126,9 +146,11 @@ export default function Experience() {
       skillWhiteGradient.style.top = event.clientY + "px";
       skillWhiteGradient.style.left = event.clientX + "px";
     });
+
     if (meshIntroPlaneRef.current) {
       meshIntroPlaneRef.current.material.transparent = true;
     }
+
     const cameraCp = camera;
     //cameraPositionCp.y = 1;
     console.log(cameraCp.position);
@@ -146,6 +168,9 @@ export default function Experience() {
 
       // Make opacity of intro plane fade to zero on scroll down:
       shaderIntroPlaneRef.current.uOpacity = containerIntroOpacity.toFixed(2);
+
+      //
+      //shaderProjectsPlaneRef.current.uOpacity = 1;
 
       // Adjust the plane's opacity based on the scroll
       if (meshIntroPlaneRef.current) {
@@ -170,6 +195,8 @@ export default function Experience() {
   /* UseFrame:
    ******************************************/
   useFrame((state, delta) => {
+    const { camera } = state;
+
     // 1. Update uTime shader uniform with delta:
     if (shaderIntroPlaneRef.current) {
       shaderIntroPlaneRef.current.uTime += delta * 0.5 * 0.5;
@@ -186,7 +213,6 @@ export default function Experience() {
     if (meshContactRef.current) {
       meshContactRef.current.rotation.x += delta * 0.5;
     }
-
     // Check if a skill cube is hovered over. If so, grow it:
     for (let i = 0; i < skillsAssets.gridSize * skillsAssets.gridSize; i++) {
       const cubeID = `cube-${i}`;
@@ -199,6 +225,16 @@ export default function Experience() {
           mesh.scale.set(0.5, 0.5, 0.5); // Shrink back to normal when not hovered
         }
       }
+    }
+
+    // 4. Carousel
+    if (carouselRef.current) {
+      carouselRef.current.rotation.y +=
+        (rotation - carouselRef.current.rotation.y) * 0.1;
+      // Update each cube in the carousel to face the camera
+      carouselRef.current.children.forEach((child) => {
+        child.lookAt(camera.position);
+      });
     }
   });
 
@@ -230,6 +266,7 @@ export default function Experience() {
       );
     }
   }
+
   const LoadingIndicator = () => {
     return (
       <Html center>
@@ -250,51 +287,124 @@ export default function Experience() {
       </Html>
     );
   };
+
+  const numberOfCubes = 7;
+
+  const carouselRef = useRef();
+  const [rotation, setRotation] = useState(0);
+  const angleStep = (2 * Math.PI) / numberOfCubes;
+
+  const frontTexture = useLoader(THREE.TextureLoader, "/textures/template.png");
+
+  const cubeMaterials = [
+    materialSkillCube, // Right face
+    materialSkillCube, // Left face
+    materialSkillCube, // Top face
+    materialSkillCube, // Bottom face
+    new THREE.MeshPhysicalMaterial({
+      map: frontTexture,
+      metalness: skillsAssets.materialProperties.metalness,
+      roughness: skillsAssets.materialProperties.roughness,
+    }), // Front face
+    materialSkillCube, // Back face
+  ];
+
+  // function NextButton({ setRotation, angleStep }) {
+  //   return (
+  //     <Html position-y={-2} style={{ left: 0, width: "100vw" }}>
+  //       d
+  //       <div>
+  //         <div className="border col-12 row p-0 m-0">
+  //           <div className="col-6 p-0 m-0 border">
+  //             <button onClick={() => setRotation((prev) => prev + angleStep)}>
+  //               <i className="fa fa-chevron-left" />
+  //             </button>
+  //           </div>
+  //           <div className="col-6 p-0 m-0 border">
+  //             {" "}
+  //             <button onClick={() => setRotation((prev) => prev + angleStep)}>
+  //               <i className="fa fa-chevron-right" />
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </Html>
+  //   );
+  // }
+
+  useFrame(() => {
+    if (carouselRef.current) {
+      carouselRef.current.rotation.y +=
+        (rotation - carouselRef.current.rotation.y) * 0.1;
+    }
+  });
+  const carouselCubes = Array.from({ length: numberOfCubes }, (_, index) => {
+    const angle = index * angleStep;
+    const x = Math.cos(angle) * 4; // radius is the distance from the center
+    const z = Math.sin(angle) * 4;
+    return (
+      <mesh
+        material={cubeMaterials}
+        key={index}
+        scale={[2, 2, 2]}
+        position={[x, 0, z]}
+      >
+        <boxGeometry args={[1, 1, 1]} />
+      </mesh>
+    );
+  });
+
   return (
     <>
       <Suspense fallback={<LoadingIndicator />}>
         <Environment preset="city" />
-        <Perf position="bottom-left" />
+        {/* <Perf position="bottom-left" /> */}
         <group>
           <ambientLight intensity={4} />
           {/* 1. Intro:
            ******************************************/}
-          <primitive
-            material={materialIntroMonogram2}
-            ref={primitiveIntroMonogramRef}
-            object={modelMonogram.scene}
-            scale={[0.4, 0.4, 0.4]}
-            //position={[2.5, -0.75, 5]}
-            position={[0.5, -0.75, 1]}
-            rotation={[0, 0.9, 0]}
-          />
-          <mesh ref={meshIntroPlaneRef} scale={[2.5, 1.1, 1.5]}>
-            <planeGeometry args={[3.5, 3.5]} />
-            <shaderIntroPlaneMaterial ref={shaderIntroPlaneRef} opacity={0.2} />
-          </mesh>
+          <Sparkles size={1} scale={8} speed={0.1} />
+          <group>
+            <primitive
+              material={materialIntroMonogram}
+              object={modelMonogram.scene}
+              position={[0, -0.75, 1]}
+              ref={primitiveIntroMonogramRef}
+              rotation={[0, 0.9, 0]}
+              scale={[0.4, 0.4, 0.4]}
+            />
+            <mesh ref={meshIntroPlaneRef} scale={[2.5, 1.1, 1.5]}>
+              <planeGeometry args={[3.5, 3.5]} />
+              <shaderIntroPlaneMaterial
+                opacity={0.1}
+                ref={shaderIntroPlaneRef}
+              />
+            </mesh>
+          </group>
 
           {/* 2. Skills:
            ******************************************/}
           <group
-            scale={0.7}
-            rotation={[0, 0.6, 0]}
-            ref={skillsRef}
             position-y={[-objectsDistance * 1 - 0.1]}
+            ref={skillsRef}
+            rotation={[0, 0.2, 0]}
+            scale={0.7}
           >
             <Float speed={2.5}>{cubes}</Float>
           </group>
 
           {/* 3. Projects:
            ******************************************/}
-
-          <mesh ref={meshProjectsRef} position-y={[-objectsDistance * 2]}>
-            <primitive
-              object={computerMonogram.scene}
-              scale={[0.5, 0.5, 0.5]}
-              position={[1.5, -1, 3]}
-              rotation={[0, 0.5, 0]}
-            />
-          </mesh>
+          <group
+            ref={meshProjectsRef}
+            rotation={[0, 0.2, 0]}
+            position-y={[-objectsDistance * 2]}
+          >
+            <group scale={0.35} ref={carouselRef}>
+              {carouselCubes}
+            </group>
+            {/* <NextButton setRotation={setRotation} angleStep={angleStep} /> */}
+          </group>
 
           {/* 4. Contact:
            ******************************************/}

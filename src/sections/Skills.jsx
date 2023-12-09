@@ -143,6 +143,8 @@ export default function Skills() {
           position: "relative",
           width: "100vw",
           zIndex: 1,
+          height: 40,
+          marginBottom: -40,
         }}
       >
         <a href="#projects-bg">

@@ -1,7 +1,6 @@
 export const fragmentShader = `
 precision highp float;
 
-uniform float uOpacity;
 uniform float uTime;
 varying vec2 vUv;
 
@@ -12,7 +11,7 @@ void main() {
     // Create a dynamic gradient avoiding pink
     vec3 color = vec3(
         0.5 + 0.5 * sin(uTime + uv.x),         // Red component
-        0.2 + 0.5 * sin(uTime * 1.3 + uv.y),   // Green component
+        0.5 + 0.5 * sin(uTime * 1.3 + uv.y),   // Green component
         0.5 + 0.5 * cos(uTime * 1.7 + uv.x)    // Blue component
     );
 
@@ -24,6 +23,6 @@ void main() {
     float diamond = smoothstep(0.8, 0.5, abs(uv.x) + abs(uv.y));
     color *= diamond;
 
-    gl_FragColor = vec4(color, 1.0) * 0.5 * uOpacity;
+    gl_FragColor = vec4(color, 1.0) * 0.6;
 }
 `;
