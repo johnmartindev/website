@@ -4,25 +4,25 @@ const skills = [
   {
     title: "Web Development",
     description:
-      "My skill stack includes a diverse range of technologies across multiple domains: front-end, back-end, and middleware. It includes the likes of HTML5, CSS3, and JavaScript, but also languages like Python, Ruby, and PHP when such languages are required (for example, PHP on Wordpress sites).",
+      'I offer a diverse range of web development skills — on both front and back ends ("full stack"). This includes HTML5, CSS3, and JavaScript (with various libraries), but also the ability to write the likes of Python, Ruby, and PHP when a project requires them.',
     img: {
-      src: "/textures/skill-cubes/0.png",
+      src: "/textures/skill-cubes-expanded/test.png",
     },
   },
   {
     title: "Programming",
     description:
-      "JavaScript is the programming language I use most. In recent years, this technology has become incredibly robust and ubiquitous — used to code on ...servers, and even ... microcontrollers. I take advantage of JavaScript libraries and frameworks where possible (React). ... superset TypeScript. ... As mentioned in other sections I can write Python, PHP, Ruby and some C and Java when needed.",
+      "I primarily program in JavaScript/TypeScript. In recent years, these languages have matured into highly robust and ubiquitous tools, used in servers, database APIs, and even for interfacing with microcontrollers (e.g., Arduinos). Additionally, there are few major programming languages with which I don't have some experience.",
     img: {
-      src: "/textures/skill-cubes/1.png",
+      src: "/textures/skill-cubes-expanded/test.png",
     },
   },
   {
     title: "User Experience",
     description:
-      "Skill 2 is ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "I take a lot of satisfication in producing work that provides meaningful and relevant experiences for all users. User Experience Design... usability... my degree... speciality.",
     img: {
-      src: "/textures/skill-cubes/2.png",
+      src: "/textures/skill-cubes-expanded/test.png",
     },
   },
   {
@@ -87,13 +87,80 @@ export default function Skills() {
           src="./textures/skill-cubes/white-radial-gradient.png"
         />
       </div>
-      <div id="skill-overlay" className="skill-overlay py-4">
-        <div className="skill-hud text-light row col-12 col-md-6 offset-md-3">
-          <div className="col-6">
-            <h1>{skills[useSkillsStore((state) => state.skillIndex)].title}</h1>
-            <h3 className="subtitle-darker">Subtitle</h3>
+      <div id="skill-overlay" className="skill-overlay py-0 m-0 p-0">
+        <div className="center-vertically" style={{ height: "100vh" }}>
+          <div
+            className="col-12 col-md-6 text-light p-0 m-0"
+            style={{ height: "85vh" }}
+          >
+            <div className="col-12 px-2">
+              <button
+                className="float-end btn btn-sm btn-outline-danger"
+                onClick={() =>
+                  (document.getElementById("skill-overlay").style.display =
+                    "none")
+                }
+              >
+                Close <i className="fa-solid fa-close"></i>
+              </button>
+            </div>
+            <button
+              className="btn btn-dark"
+              style={{
+                height: 180,
+                left: 0,
+                marginTop: "25vh",
+                padding: 7,
+                position: "absolute",
+              }}
+            >
+              <i className="fa-solid fa-chevron-left"></i>
+            </button>
+            <button
+              className="btn btn-dark"
+              style={{
+                height: 180,
+                marginTop: "25vh",
+                padding: 7,
+                position: "absolute",
+                right: 0,
+              }}
+            >
+              <i className="fa-solid fa-chevron-right"></i>
+            </button>
+            <div className="col-12" style={{ marginTop: "15vh" }}>
+              <h1 style={{ fontSize: 42 }}>
+                {skills[useSkillsStore((state) => state.skillIndex)].title}
+              </h1>
+            </div>
+            <div className="col-12">
+              <div className="center-vertically" style={{ height: 250 }}>
+                <img
+                  width="150px"
+                  src={
+                    skills[useSkillsStore((state) => state.skillIndex)].img.src
+                  }
+                />
+              </div>
+            </div>
+            <div className="col-12 pt-1">
+              <p style={{ fontWeight: 300, lineHeight: 2 }}>
+                {
+                  skills[useSkillsStore((state) => state.skillIndex)]
+                    .description
+                }
+              </p>
+            </div>
           </div>
-          <div className="col-6">
+        </div>
+        {/* <div style={{ height: 200 }}>
+        <div className="border skill-hud text-light row col-12 col-md-8 p-0 col-md-6 offset-md-2 offset-0">
+          <div className="col-6 border">
+            <h2>
+              {skills[useSkillsStore((state) => state.skillIndex)].title}
+            </h2>
+          </div>
+          <div className="col-6 border">
             <button
               onClick={() =>
                 (document.getElementById("skill-overlay").style.display =
@@ -104,8 +171,9 @@ export default function Skills() {
             </button>
           </div>
         </div>
-        <div className="skill-area text-light row col-12 col-md-6 offset-md-3">
-          <div className="col-6 center-vertically">
+      </div> */}
+        {/* <div className="skill-area border text-light row col-12 col-md-8 p-0 col-md-6 offset-md-2 offset-0">
+          <div className="col-6 border center-vertically">
             <div className="skill-area-l center-vertically">
               <button className="test-button down left leftTop rounded-0">
                 <img
@@ -116,7 +184,7 @@ export default function Skills() {
               </button>
             </div>
           </div>
-          <div className="col-6 center-vertically">
+          <div className="col-6 border center-vertically">
             <div className="skill-area-r center-vertically">
               <div className="">
                 {
@@ -126,7 +194,7 @@ export default function Skills() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="page-section center-vertically" id="skills">
         <div
