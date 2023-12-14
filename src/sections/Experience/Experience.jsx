@@ -27,6 +27,7 @@ export default function Experience() {
   const objectsDistance = 5;
   let containerMain = document.getElementById("wrapper-container");
   let containerIntro = document.getElementById("intro");
+  let btnScrollToTop = document.getElementById("btn-scroll-to-top-wrapper");
   //const controls = useControls({ position: -2 });
 
   /* References:
@@ -172,12 +173,27 @@ export default function Experience() {
     }
 
     return (
-      <primitive
-        object={gltf.scene}
-        rotation={[0, -Math.PI / 2, 0]}
-        position-y={-1.5}
-        scale={1.3}
-      />
+      <>
+        <Html
+          rotation={[0, -Math.PI / 2, 0]}
+          position-y={-1.5 + 1.9}
+          position-x={-1.23}
+          scale={1.5}
+        >
+          <iframe
+            width="330"
+            height="225"
+            src="https://bruno-simon.com/html/"
+          ></iframe>
+        </Html>
+        <primitive
+          object={gltf.scene}
+          rotation={[0, -Math.PI / 2, 0]}
+          position-y={-1.5}
+          position-x={-0.1}
+          scale={1.5}
+        />
+      </>
     );
   };
 
@@ -233,19 +249,22 @@ export default function Experience() {
     }
 
     const cameraCp = camera;
-    //cameraPositionCp.y = 1;
     console.log(cameraCp.position);
 
     // Handle scroll:
     const handleScroll = () => {
       const containerHeight = containerMain.offsetHeight;
-      const containerTop = containerMain.getBoundingClientRect().top;
+      const containerTop = containerMain.getBoundingClientRect().top; // -scroll amount
       const containerIntroRect = containerIntro.getBoundingClientRect();
       const containerIntroHeight = containerIntroRect.height;
       const containerIntroOpacity = 1 - -containerTop / containerIntroHeight;
 
       // Make camera follow objects of each section:
       camera.position.y = (containerTop / containerHeight) * objectsDistance;
+
+      // Display "scroll to top" button:
+      const scrollToTopBtnShow = Math.abs(containerTop) < containerHeight / 2;
+      btnScrollToTop.style.display = scrollToTopBtnShow ? "none" : "block";
 
       // Make opacity of intro plane fade to zero on scroll down:
       shaderIntroPlaneRef.current.uOpacity = containerIntroOpacity.toFixed(2);
@@ -381,20 +400,16 @@ export default function Experience() {
   };
 
   const projectsCubesAmount = 7;
-
   const projectsRef = useRef();
-
   const projectsTextures = useLoader(
     THREE.TextureLoader,
     projectsAssets.imagePaths
   );
-
   const materialProjectsCube = new THREE.MeshPhysicalMaterial({
     color: 0x999999,
     metalness: 0.9,
     roughness: 0.1,
   });
-
   const [rotation, setRotation] = useState(0);
   const angleStep = (2 * Math.PI) / projectsCubesAmount;
 
@@ -402,24 +417,20 @@ export default function Experience() {
     // Find the element
     const nextButton = document.getElementById("btn-project-next");
     const prevButton = document.getElementById("btn-project-prev");
-
     const handleNextButtonClick = (e) => {
       e.preventDefault();
       setRotation((prevRotation) => prevRotation + angleStep);
     };
-
     const handlePrevButtonClick = (e) => {
       e.preventDefault();
       setRotation((prevRotation) => prevRotation - angleStep);
     };
-
     if (nextButton) {
       nextButton.addEventListener("click", handleNextButtonClick);
     }
     if (prevButton) {
       prevButton.addEventListener("click", handlePrevButtonClick);
     }
-
     return () => {
       if (nextButton) {
         nextButton.removeEventListener("click", handleNextButtonClick);
@@ -470,7 +481,6 @@ export default function Experience() {
           }
         }
       }
-
       return (
         <mesh
           material={projectsMaterials}
@@ -544,37 +554,12 @@ export default function Experience() {
             <group scale={0.35} ref={projectsRef}>
               {projectsCubes}
             </group>
-            {/* <Cylinder
-              args={[0.3, 0.3, 0.04]}
-              position={[0, 0, 0]}
-              material={materialSkillCube}
-            /> */}
-
-            {/* <Billboard
-              follow={false}
-              lockX={false}
-              lockY={false}
-              lockZ={false} // Lock the rotation on the z axis (default=false)
-            >
-              <Text
-                fontSize={0.2}
-                color="#222"
-                rotation-z={0.05}
-                position={[1, -0.7, -1.5]}
-              >
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Provident eum saepe repudiandae? Beatae officia, suscipit
-                tempore, veniam quam eaque quibusdam, totam voluptatem fugit hic
-                harum assumenda voluptatum ab voluptas minus.
-              </Text>
-            </Billboard> */}
             {/* <EffectComposer>
               <BrightnessContrast
                 brightness={0.3} // brightness. min: -1, max: 1
                 contrast={0.3} // contrast: min -1, max: 1
               />
             </EffectComposer> */}
-            {/* <NextButton setRotation={setRotation} angleStep={angleStep} /> */}
           </group>
 
           {/* 4. Contact:
@@ -585,13 +570,6 @@ export default function Experience() {
             position-y={[-objectsDistance * 3]}
           >
             <Model />
-            {/* <Html position={[-1.36, 0.35, 0]} scale={2}>
-              <iframe
-                width="355"
-                height="235"
-                src="http://www.news.com"
-              ></iframe>
-            </Html> */}
           </group>
 
           {/* <mesh geometry={nodes.baked.geometry}>
