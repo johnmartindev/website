@@ -4,15 +4,12 @@ import * as THREE from "three";
 import { useRef, useEffect, Suspense, useState } from "react";
 import { extend, useFrame, useLoader, useThree } from "@react-three/fiber";
 import {
-  Cylinder,
   Environment,
   Float,
   Html,
-  Plane,
   //ScrollControls,
   Sparkles,
   useGLTF,
-  useTexture,
 } from "@react-three/drei";
 import { ShaderIntroPlaneMaterial } from "./shaders/introPlane/shaderIntroPlaneMaterial";
 //import { ShaderProjectsPlaneMaterial } from "./shaders/projects/shaderProjectsPlaneMaterial";
@@ -40,7 +37,7 @@ export default function Experience() {
   // const [monogramOpacity, setMonogramOpacity] = useState(1);
   // const monogramRef = useRef();
 
-  const matcapTextureFile = `/matcaps/diamond/matcap-diamond.jpg`;
+  const matcapTextureFile = `/matcaps/diamond/matcap-diamond2.jpg`;
   const texture = {
     matcap: matcapTextureFile,
     skin: "/matcaps/diamond/skin.png",
@@ -174,30 +171,34 @@ export default function Experience() {
 
     return (
       <>
-        <Html
-          rotation={[0, -Math.PI / 2, 0]}
-          position-y={-1.5 + 1.9}
-          position-x={-1.23}
-          scale={1.5}
-        >
-          <iframe
-            width="330"
-            height="225"
-            src="https://bruno-simon.com/html/"
-          ></iframe>
-        </Html>
         <primitive
           object={gltf.scene}
-          rotation={[0, -Math.PI / 2, 0]}
-          position-y={-1.5}
           position-x={-0.1}
+          position-y={-1.5}
+          rotation={[0, 0, 0]}
           scale={1.5}
-        />
+        >
+          <rectAreaLight
+            color={"#ff0000"}
+            distanceFactor={2}
+            height={3}
+            intensity={2}
+            width={2.5}
+          />
+
+          <Html
+            distanceFactor={1}
+            position={[0.085, 0.75, -0.5]}
+            rotation={[-0.12, 0, 0]}
+            transform
+            wrapperClass="htmlScreen"
+          >
+            <iframe src="/iframe"></iframe>
+          </Html>
+        </primitive>
       </>
     );
   };
-
-  console.log(screenModel);
 
   // const bakedTexture = useTexture("./models/portal/baked.jpg");
   //bakedTexture.flipY = false;
@@ -502,13 +503,29 @@ export default function Experience() {
   return (
     <>
       <Suspense fallback={<LoadingIndicator />}>
-        <Environment preset="city" />
+        <Environment
+          background={false} // can be true, false or "only" (which only sets the background) (default: false)
+          blur={0} // blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
+          files={[
+            "./cubemaps/2/px.jpg",
+            "./cubemaps/2/nx.jpg",
+            "./cubemaps/2/py.jpg",
+            "./cubemaps/2/ny.jpg",
+            "./cubemaps/2/pz.jpg",
+            "./cubemaps/2/nz.jpg",
+          ]}
+          preset="city"
+          path="/"
+          scene={undefined} // adds the ability to pass a custom THREE.Scene, can also be a ref
+          encoding={undefined} // adds the ability to pass a custom THREE.TextureEncoding (default: THREE.sRGBEncoding for an array of files and THREE.LinearEncoding for a single texture)
+        />
+
         {/* <Perf position="bottom-left" /> */}
         <group>
           <ambientLight intensity={4} />
           {/* 1. Intro:
            ******************************************/}
-          <Sparkles size={1} scale={8} speed={0.1} />
+          <Sparkles size={1} scale={8} speed={0.05} />
           <group>
             <primitive
               material={materialIntroMonogram}

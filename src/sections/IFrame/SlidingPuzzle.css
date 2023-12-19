@@ -1,0 +1,16 @@
+.App-header {
+  background: none !important;
+  width: 100% !important;
+}
+
+.btn-new-game {
+  display: none !important;
+}
+
+.slider-board {
+  margin-top: 0 !important;
+}
+
+.slider-msg {
+  display: none;
+}

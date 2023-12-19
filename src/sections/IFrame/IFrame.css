@@ -1,0 +1,39 @@
+.iframe-contact-bg-tile-crystals {
+  background: url("./img/bg/tile-crystals.png");
+  background-repeat: repeat;
+  height: 100vh;
+  opacity: 1;
+  overflow: scroll;
+  width: 100vw;
+}
+
+.iframe-contact-wrapper {
+  height: 100vh;
+}
+
+.iframe-contact-hud {
+  height: 10vh;
+  position: fixed;
+}
+
+.iframe-contact-hud-clock {
+  font-size: 26px;
+  height: 100%;
+}
+
+.iframe-contact-hud-user {
+  font-size: 26;
+  height: 100%;
+}
+
+.iframe-contact-main-area {
+  height: 90vh;
+  margin-top: 40px;
+}
+
+.iframe-contact-sliding-puzzle-wrapper {
+  background: #000;
+  height: 225px;
+  margin-top: 20px;
+  width: 100%;
+}

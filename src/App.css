@@ -36,20 +36,6 @@ div#projects-bg {
 }
 
 div#projects-bg-layer {
-  /* background: url("https://images.pexels.com/photos/752484/pexels-photo-752484.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"); */
-  /* background: url("https://images.pexels.com/photos/1714205/pexels-photo-1714205.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
-  background-size: cover;
-  background-attachment: fixed;
-  height: 100vh;
-  width: 100vw;
-  z-index: 100;
-  position: absolute;
-  mix-blend-mode: difference;
-  pointer-events: none;
-  opacity: 0.1;
-
-  filter: blur(10px) hue-rotate(45deg) saturate(1.2); */
-
   background: url("https://images.pexels.com/photos/3308588/pexels-photo-3308588.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
   background-size: cover;
   background-attachment: fixed;
@@ -63,6 +49,19 @@ div#projects-bg-layer {
   filter: blur(5px) hue-rotate(10deg) saturate(1);
 }
 
+div#intro-bg-layer {
+  background: url("./img/bg/intro-northern-lights.png");
+  background-size: cover;
+  background-attachment: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: 100000;
+  position: absolute;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  opacity: 0.2;
+  filter: blur(10px) hue-rotate(10deg) saturate(1);
+}
 div#contact-bg {
   background: #1c1c1c;
 }
@@ -292,4 +291,95 @@ h3.subtitle-darker {
   right: 0px;
   width: 70px;
   z-index: 5;
+}
+
+.htmlScreen iframe {
+  width: 715px;
+  height: 440px;
+  border: none;
+  opacity: 0.9;
+}
+
+.btn-x.hover-filled-slide-right::before {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+}
+.btn-x.hover-filled-slide-right:hover::before {
+  width: 0%;
+}
+
+.btn-x:active,
+.btn-x:hover,
+.btn-x:focus {
+  outline: 0 !important;
+  outline-offset: 0;
+}
+.btn-x::before,
+.btn-x::after {
+  position: absolute;
+  content: "";
+}
+
+.btn-x.hover-filled-opacity::before {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 1;
+}
+.btn-x.hover-filled-opacity:hover::before {
+  opacity: 0;
+}
+
+.btn-x {
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  height: auto;
+  min-width: 150px;
+  position: relative;
+  width: 100%;
+}
+
+.btn-x span {
+  display: inline-block;
+  font-size: 26px;
+  font-weight: bold;
+  left: 0;
+  letter-spacing: 2px;
+  padding: 15px 20px;
+  position: relative;
+  text-transform: uppercase;
+  top: 0;
+  transition: 0.3s;
+  width: 100%;
+}
+
+.btn-1::before {
+  background-color: rgb(28, 31, 30);
+  transition: 0.3s ease-out;
+}
+.btn-1 span {
+  color: rgb(255, 255, 255);
+  transition: 0.2s 0.1s;
+}
+.btn-1 span:hover {
+  color: rgb(28, 31, 30);
+  transition: 0.2s 0.1s;
+}
+
+.btn-x.hover-filled-slide-right::before {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+}
+.btn-x.hover-filled-slide-right:hover::before {
+  width: 0%;
 }

@@ -1,7 +1,12 @@
 export default function Projects() {
   return (
     <>
-      <div className="center-vertically" id="projects-bg-layer"></div>
+      <div className="center-vertically" id="projects-bg-layer">
+        <div
+          id="project-bg-animation"
+          style={{ height: "100%", width: "100%" }}
+        ></div>
+      </div>
       <div className="page-section center-vertically" id="projects">
         <div
           className="page-section-fore text-light"
